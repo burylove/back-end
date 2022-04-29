@@ -10,6 +10,12 @@ export interface Web2UserAndKey {
   secretKey:string;
 }
 
+export interface transfer_info {
+  near_address:string;
+  receiverId:string;
+  amount:string;
+}
+
 export interface Web2UserKey {
   key:string
 }

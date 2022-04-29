@@ -19,4 +19,13 @@ export class NearUsersService {
     // save success
     console.log(userResult);
   }
+
+  async findSecretKey(near_address:string) {
+    const result = await this.usersModel.findOne({
+      where: { near_address },
+    });
+    return result;
+  }
 }
+
+

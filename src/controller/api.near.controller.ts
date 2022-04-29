@@ -1,9 +1,9 @@
 import {Body, Controller, Get, Inject, Post, Query} from '@midwayjs/decorator';
-import {generate_account, generate_key, query_near_account_balance} from "../chain/near";
+import {generate_account, generate_key, query_near_account_balance, transfer_near} from "../chain/near";
 import {Context} from "@midwayjs/koa";
 import {Web2UsersService} from '../service/web2.user.service';
 import {NearUsersService} from "../service/near.user.service";
-import {Web2UserAndKey, Web2UserKey} from "../interface";
+import {transfer_info, Web2UserAndKey, Web2UserKey} from "../interface";
 import {Web2UsersKey} from "../service/user.key.service";
 
 @Controller('/api/near')
@@ -25,7 +25,8 @@ export class HomeController {
   @Get('/query/near_account_balance')
   async query_near_account_balance(@Query() queryData): Promise<string> {
     const near_address:string = queryData.near_address;
-    const secretKey:string = 'ed25519:66gCJUAJWwhR1zAaXAFifgtQixdn4LioXzMn2Q68g9M5sKQiqV1dufUtjY5yUpxVrFqxC7xGAC1tEhrYeHvnTDDc';
+    const info = await this.nearUserService.findSecretKey(near_address);
+    const secretKey:string = info.secretKey;
     const input = {
       near_address,
       secretKey
@@ -75,6 +76,23 @@ export class HomeController {
       near_hex_account
     };
     await this.web2UserService.saveUser(user_input);
-    return "success";
+    return near_hex_account;
+  }
+
+  @Post('/user/transfer/near')
+  async user_transfer_near(@Body() input: transfer_info) {
+    const near_address = input.near_address;
+    const receiverId = input.receiverId;
+    const amount = input.amount;
+    const info = await this.nearUserService.findSecretKey(near_address);
+    const secretKey = info.secretKey;
+    const input_info = {
+      secretKey,
+      near_address,
+      receiverId,
+      amount
+    };
+    const result = await transfer_near(input_info)
+    return result;
   }
 }

@@ -60,9 +60,10 @@ const transfer_near = async (input: { secretKey: string; near_address: string; r
   };
   const near = await connect(config);
   const account_info = await near.account(account);
+  const near_amount = utils.format.parseNearAmount(input.amount);
   const result = await account_info.sendMoney(
     input.receiverId, // receiver account
-    input.amount // amount in yoctoNEAR
+    near_amount // amount in yoctoNEAR
   );
   return result;
   // "1000000000000000000000000"

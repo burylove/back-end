@@ -157,7 +157,6 @@ export class HomeController {
 
   @Post('/admin/transfer/near')
   async admin_transfer_near(@Body() input: transfer_info) {
-    const send_near_address = input.near_address;
     const receiverId = input.receiverId;
     const amount = input.amount;
     const secretKey = ADMIN_KEY;
@@ -169,7 +168,7 @@ export class HomeController {
       amount
     };
     const result = await transfer_near(input_info);
-    await this.nearUserService.DelUserInternalBalance(send_near_address,amount)
+    await this.nearUserService.DelUserInternalBalance(receiverId,amount)
     return result;
   }
 

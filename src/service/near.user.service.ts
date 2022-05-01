@@ -51,6 +51,15 @@ export class NearUsersService {
     return userResult;
   }
 
+  async DelUserInternalBalance(near_address:string,balance:string) {
+    const result = await this.usersInternalModel.findOne({
+      where: { near_address },
+    });
+    result.near_balance = (Number(result.near_balance) - Number(balance)).toString();
+    const userResult = await this.usersInternalModel.save(result);
+    return userResult;
+  }
+
   async checkUserInternalBalance(near_address:string) {
     const result = await this.usersInternalModel.findOne({
       where: { near_address },

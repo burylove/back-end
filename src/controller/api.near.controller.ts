@@ -4,7 +4,6 @@ import {Context} from "@midwayjs/koa";
 import {Web2UsersService} from '../service/web2.user.service';
 import {NearUsersService} from "../service/near.user.service";
 import {
-  admin_transfer_info,
   pet_box_info,
   pet_eggs_info,
   pet_store_info,
@@ -157,7 +156,8 @@ export class HomeController {
   }
 
   @Post('/admin/transfer/near')
-  async admin_transfer_near(@Body() input: admin_transfer_info) {
+  async admin_transfer_near(@Body() input: transfer_info) {
+    const send_near_address = input.near_address;
     const receiverId = input.receiverId;
     const amount = input.amount;
     const secretKey = ADMIN_KEY;
@@ -169,6 +169,7 @@ export class HomeController {
       amount
     };
     const result = await transfer_near(input_info);
+    await this.nearUserService.DelUserInternalBalance(send_near_address,amount)
     return result;
   }
 

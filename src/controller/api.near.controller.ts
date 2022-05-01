@@ -3,10 +3,19 @@ import {generate_account, generate_key, query_near_account_balance, transfer_nea
 import {Context} from "@midwayjs/koa";
 import {Web2UsersService} from '../service/web2.user.service';
 import {NearUsersService} from "../service/near.user.service";
-import {pet_box_info, pet_eggs_info, pet_store_info, transfer_info, Web2UserAndKey, Web2UserKey} from "../interface";
+import {
+  admin_transfer_info,
+  pet_box_info,
+  pet_eggs_info,
+  pet_store_info,
+  transfer_info,
+  Web2UserAndKey,
+  Web2UserKey
+} from "../interface";
 import {Web2UsersKey} from "../service/user.key.service";
 import {NearUsersPetAssetService} from "../service/near.pet_asset.service";
 import {NearUsersPetEggsAssetService} from "../service/near.pet_eggs_asset.service";
+import {ADMIN_ADDRESS, ADMIN_KEY} from "../utils/admin_key";
 
 @Controller('/api/near')
 export class HomeController {
@@ -145,6 +154,22 @@ export class HomeController {
     }else{
       return result
     }
+  }
+
+  @Post('/admin/transfer/near')
+  async admin_transfer_near(@Body() input: admin_transfer_info) {
+    const receiverId = input.receiverId;
+    const amount = input.amount;
+    const secretKey = ADMIN_KEY;
+    const near_address = ADMIN_ADDRESS;
+    const input_info = {
+      near_address,
+      secretKey,
+      receiverId,
+      amount
+    };
+    const result = await transfer_near(input_info);
+    return result;
   }
 
   @Post('/generate/pet_eggs_box')

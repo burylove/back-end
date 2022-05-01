@@ -16,6 +16,11 @@ export interface transfer_info {
   amount:string;
 }
 
+export interface admin_transfer_info {
+  receiverId:string;
+  amount:string;
+}
+
 export interface pet_box_info {
   near_address:string;
 }

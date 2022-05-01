@@ -50,6 +50,13 @@ export class NearUsersService {
     const userResult = await this.usersInternalModel.save(result);
     return userResult;
   }
+
+  async checkUserInternalBalance(near_address:string) {
+    const result = await this.usersInternalModel.findOne({
+      where: { near_address },
+    });
+    return result.near_balance;
+  }
 }
 
 

@@ -44,6 +44,13 @@ export class HomeController {
     return `${result}`;
   }
 
+  @Get('/query/near_internal_account_balance')
+  async query_near_internal_account_balance(@Query() queryData): Promise<string> {
+    const near_address:string = queryData.near_address;
+    const result = await this.nearUserInternalAssetService.checkUserInternalBalance(near_address);
+    return result;
+  }
+
   @Post('/add_web2_user_key')
   async add_web2_user_key(@Body() input:Web2UserKey) {
     const key = input.key;

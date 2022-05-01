@@ -46,7 +46,7 @@ export class NearUsersService {
     const result = await this.usersInternalModel.findOne({
       where: { near_address },
     });
-    result.near_balance = result.near_balance + balance;
+    result.near_balance = (Number(result.near_balance) + Number(balance)).toString();
     const userResult = await this.usersInternalModel.save(result);
     return userResult;
   }

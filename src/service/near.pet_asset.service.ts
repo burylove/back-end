@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import {near_pet_asset} from "../entity/near_pet_asset";
 import {Pet_number} from "../entity/pet_number";
 import {Uncommon_pet_random} from "../utils/random";
+import {near_pet_store} from "../entity/near_pet_store";
 
 @Provide()
 export class NearUsersPetAssetService {
@@ -12,6 +13,9 @@ export class NearUsersPetAssetService {
 
   @InjectEntityModel(Pet_number)
   pet_number_Model: Repository<Pet_number>;
+
+  @InjectEntityModel(near_pet_store)
+  pet_store_Model: Repository<near_pet_store>;
 
   async addUserPet(near_account: string ) {
     const user = new near_pet_asset();
@@ -41,12 +45,36 @@ export class NearUsersPetAssetService {
     return userResult
   }
 
+  async addUserPetInStore(near_pet_index:number,near_pet_price:string) {
+    const pet_result = await this.usersModel.findOne({
+      where:{near_pet_index}
+    });
+
+    if (pet_result){
+     const input_store_data = {
+       ...pet_result,
+       near_pet_price
+     }
+     const result = await this.pet_store_Model.save(input_store_data)
+     return result
+    }else{
+      return "no data"
+    };
+  }
+
   async findAllPet(near_address:string) {
     const result = await this.usersModel.find({
       where: { near_address },
     });
     return result;
   }
+
+  // async findAllPet(near_address:string) {
+  //   const result = await this.usersModel.find({
+  //     where: { near_address },
+  //   });
+  //   return result;
+  // }
 }
 
 

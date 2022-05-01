@@ -3,8 +3,10 @@ import {generate_account, generate_key, query_near_account_balance, transfer_nea
 import {Context} from "@midwayjs/koa";
 import {Web2UsersService} from '../service/web2.user.service';
 import {NearUsersService} from "../service/near.user.service";
-import {transfer_info, Web2UserAndKey, Web2UserKey} from "../interface";
+import {pet_box_info, pet_eggs_info, transfer_info, Web2UserAndKey, Web2UserKey} from "../interface";
 import {Web2UsersKey} from "../service/user.key.service";
+import {NearUsersPetAssetService} from "../service/near.pet_asset.service";
+import {NearUsersPetEggsAssetService} from "../service/near.pet_eggs_asset.service";
 
 @Controller('/api/near')
 export class HomeController {
@@ -20,7 +22,14 @@ export class HomeController {
   @Inject()
   nearUserService: NearUsersService;
 
+  @Inject()
+  nearUserPetAssetService: NearUsersPetAssetService;
 
+  @Inject()
+  nearUserPetEggsAssetService: NearUsersPetEggsAssetService;
+
+  @Inject()
+  nearUserInternalAssetService: NearUsersService;
 
   @Get('/query/near_account_balance')
   async query_near_account_balance(@Query() queryData): Promise<string> {
@@ -75,6 +84,7 @@ export class HomeController {
       email,
       near_hex_account
     };
+    await this.nearUserInternalAssetService.saveInternalUser(near_hex_account);
     await this.web2UserService.saveUser(user_input);
     return near_hex_account;
   }
@@ -93,6 +103,41 @@ export class HomeController {
       amount
     };
     const result = await transfer_near(input_info)
+    if (result.transaction.receiver_id == 'c26017bdca4bb94ee8622c5bf9c4f4425bf4d0f0709b1e35a05e309764c20b8f'){
+      const internal_result = this.nearUserInternalAssetService.addUserInternalBalance(near_address,amount)
+      return internal_result
+    }else{
+      return result
+    }
+  }
+
+  @Get('/user/pet/all')
+  async user_pet_all(@Query() input: pet_box_info) {
+    const near_address = input.near_address;
+    const result = await this.nearUserPetAssetService.findAllPet(near_address)
+    return result;
+  }
+
+
+  @Post('/user/open/pet_box')
+  async user_open_pet_box(@Body() input: pet_box_info) {
+    const near_address = input.near_address;
+    const result = await this.nearUserPetAssetService.addUserPet(near_address)
+    return result;
+  }
+
+  @Get('/user/pet_eggs/all')
+  async user_pet_eggs_all(@Query() input: pet_box_info) {
+    const near_address = input.near_address;
+    const result = await this.nearUserPetEggsAssetService.findAllPetEggs(near_address)
+    return result;
+  }
+
+
+  @Post('/generate/pet_eggs_box')
+  async generate_pet_eggs_box(@Body() input: pet_eggs_info) {
+    const near_address = input.near_address;
+    const result = await this.nearUserPetEggsAssetService.addUserPetEggs(near_address)
     return result;
   }
 }

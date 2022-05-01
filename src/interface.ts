@@ -16,6 +16,14 @@ export interface transfer_info {
   amount:string;
 }
 
+export interface pet_box_info {
+  near_address:string;
+}
+
+export interface pet_eggs_info {
+  near_address:string;
+}
+
 export interface Web2UserKey {
   key:string
 }

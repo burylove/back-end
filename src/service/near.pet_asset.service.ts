@@ -63,6 +63,20 @@ export class NearUsersPetAssetService {
     };
   }
 
+  async buyUserPetInStore(near_pet_index:number,near_pet_price:string) {
+    const pet_result = await this.pet_store_Model.findOne({
+      where:{near_pet_index}
+    });
+
+    if (near_pet_price == pet_result.near_pet_price){
+      await this.usersModel.save(pet_result)
+      await this.pet_store_Model.remove(pet_result)
+      return 'ok'
+    }else{
+      return "not enough money"
+    }
+  }
+
   async findAllPet(near_address:string) {
     const result = await this.usersModel.find({
       where: { near_address },

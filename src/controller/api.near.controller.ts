@@ -186,4 +186,12 @@ export class HomeController {
     const result = await this.nearUserPetAssetService.addUserPetInStore(near_pet_index,near_pet_price)
     return result;
   }
+
+  @Post('/user/buy/pet_store')
+  async user_buy_pet_store(@Body() input: pet_store_info) {
+    const near_pet_index = input.near_pet_index;
+    const near_pet_price = input.near_pet_price;
+    const result = await this.nearUserPetAssetService.buyUserPetInStore(near_pet_index,near_pet_price)
+    return result;
+  }
 }

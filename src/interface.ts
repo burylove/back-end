@@ -18,6 +18,7 @@ export interface transfer_info {
 
 export interface pet_box_info {
   near_address:string;
+  near_pet_eggs_index:number;
 }
 
 export interface pet_eggs_info {

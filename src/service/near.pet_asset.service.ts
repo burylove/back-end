@@ -5,6 +5,7 @@ import {near_pet_asset} from "../entity/near_pet_asset";
 import {Pet_number} from "../entity/pet_number";
 import {Uncommon_pet_random} from "../utils/random";
 import {near_pet_store} from "../entity/near_pet_store";
+import {near_pet_eggs_asset} from "../entity/near_pet_eggs_asset";
 
 @Provide()
 export class NearUsersPetAssetService {
@@ -17,7 +18,10 @@ export class NearUsersPetAssetService {
   @InjectEntityModel(near_pet_store)
   pet_store_Model: Repository<near_pet_store>;
 
-  async addUserPet(near_account: string ) {
+  @InjectEntityModel(near_pet_eggs_asset)
+  usersEggsModel: Repository<near_pet_eggs_asset>;
+
+  async addUserPet(near_account: string,near_pet_eggs_index:number ) {
     const user = new near_pet_asset();
     user.near_address = near_account;
 
@@ -41,8 +45,13 @@ export class NearUsersPetAssetService {
     const userResult = await this.usersModel.save(user);
     pet_number_result.pet_number ++
     await this.pet_number_Model.save(pet_number_result);
+    //remove
+    const user_eggs_info = await this.usersEggsModel.findOne({
+      where:{near_pet_eggs_index:near_pet_eggs_index}
+    });
+    await this.usersEggsModel.remove(user_eggs_info);
     // save success
-    return userResult
+    return userResult;
   }
 
   async addUserPetInStore(near_pet_index:number,near_pet_price:string) {

@@ -73,8 +73,8 @@ export class HomeController {
     return result;
   }
 
-  @Get('/store/all_pet')
-  async store_all_pet(@Query() input: pet_box_info) {
+  @Get('/user/store/all_pet')
+  async user_store_all_pet(@Query() input: pet_box_info) {
     const near_address = input.near_address;
     const result = await this.nearUserPetEggsAssetService.findAllPetEggs(near_address)
     return result;
@@ -103,7 +103,8 @@ export class HomeController {
   @Post('/user/open/pet_eggs')
   async user_open_pet_eggs(@Body() input: pet_box_info) {
     const near_address = input.near_address;
-    const result = await this.nearUserPetAssetService.addUserPet(near_address)
+    const near_pet_eggs_index = input.near_pet_eggs_index;
+    const result = await this.nearUserPetAssetService.addUserPet(near_address,near_pet_eggs_index)
     return result;
   }
 

@@ -56,6 +56,7 @@ export class NearUsersPetAssetService {
        near_pet_price
      }
      const result = await this.pet_store_Model.save(input_store_data)
+      await this.usersModel.remove(pet_result)
      return result
     }else{
       return "no data"

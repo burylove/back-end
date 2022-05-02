@@ -21,7 +21,7 @@ export class NearUsersPetEggsAssetService {
     });
     user.near_pet_eggs_index = pet_eggs_number_result.pet_eggs_number
     user.near_pet_eggs_name = 'able'
-    user.near_pet_eggs_image_url = 'https://cdn.discordapp.com/attachments/876498266550853642/969892589669072926/2b589afe10e09b84.png'
+    user.near_pet_eggs_image_url = 'https://cdn.discordapp.com/attachments/876498266550853642/970292528224038952/12.png'
     user.near_pet_eggs_type = 'normal'
     // save entity
     const userResult = await this.usersModel.save(user);

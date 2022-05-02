@@ -100,8 +100,8 @@ export class HomeController {
     }
   }
 
-  @Post('/user/open/pet_box')
-  async user_open_pet_box(@Body() input: pet_box_info) {
+  @Post('/user/open/pet_eggs')
+  async user_open_pet_eggs(@Body() input: pet_box_info) {
     const near_address = input.near_address;
     const result = await this.nearUserPetAssetService.addUserPet(near_address)
     return result;

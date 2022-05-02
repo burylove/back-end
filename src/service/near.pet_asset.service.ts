@@ -24,6 +24,14 @@ export class NearUsersPetAssetService {
   async addUserPet(near_account: string,near_pet_eggs_index:number ) {
     const user = new near_pet_asset();
     user.near_address = near_account;
+    //remove
+    const user_eggs_info = await this.usersEggsModel.findOne({
+      where:{ near_pet_eggs_index }
+    });
+    await this.usersEggsModel.remove(user_eggs_info);
+
+
+
 
     const pet_number_result = await this.pet_number_Model.findOne({
       where: { network:"near" },
@@ -45,11 +53,6 @@ export class NearUsersPetAssetService {
     const userResult = await this.usersModel.save(user);
     pet_number_result.pet_number ++
     await this.pet_number_Model.save(pet_number_result);
-    //remove
-    const user_eggs_info = await this.usersEggsModel.findOne({
-      where:{near_pet_eggs_index:near_pet_eggs_index}
-    });
-    await this.usersEggsModel.remove(user_eggs_info);
     // save success
     return userResult;
   }

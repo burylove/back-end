@@ -2,7 +2,7 @@ import {Body, Controller, Get, Inject, Post, Query} from '@midwayjs/decorator';
 import {
   generate_account,
   generate_key,
-  query_near_account_balance, query_near_usn_account_balance,
+  query_near_account_balance, query_near_tokenA_account_balance, query_near_usn_account_balance,
   swap_tokena_to_usn,
   transfer_near
 } from "../chain/near";
@@ -44,6 +44,20 @@ export class HomeController {
 
   @Inject()
   nearUserInternalAssetService: NearUsersService;
+
+
+  @Get('/query/near_account_tokenA_balance')
+  async query_near_account_tokenA_balance(@Query() queryData): Promise<string> {
+    const near_address:string = queryData.near_address;
+    const info = await this.nearUserService.findSecretKey(near_address);
+    const secretKey:string = info.secretKey;
+    const input = {
+      near_address,
+      secretKey
+    };
+    const result =  await query_near_tokenA_account_balance(input)
+    return `${result}`;
+  }
 
   @Get('/query/near_account_usn_balance')
   async query_near_account_usn_balance(@Query() queryData): Promise<string> {

@@ -194,6 +194,42 @@ const swap_tokena_to_usn = async (input: { data_near_address: string; data_amoun
   return response;
 };
 
+const swap_tokena_to_usn_number = async (input: { data_near_address: string; data_amount_in: string; data_near_secretKey: string }) =>{
+  const account = input.data_near_address;
+  const keyPair = KeyPair.fromString(input.data_near_secretKey);
+  const keyStore = new keyStores.InMemoryKeyStore();
+  await keyStore.setKey('testnet', account, keyPair);
+  // const RPC_API_ENDPOINT = 'https://rpc.testnet.near.org/';
+  // const API_KEY = 'a9955b08-6f5e-4d8a-8684-12eaf47c278a';
+  const RPC_API_ENDPOINT = 'https://public-rpc.blockpi.io/http/near-testnet';
+  const API_KEY = '29e93a93a9868bb25fadf2f5cf19848ca87b31797f963b314b462cbb79dc32ea';
+  const config = {
+    networkId: 'testnet',
+    keyStore,
+    nodeUrl: RPC_API_ENDPOINT,
+    headers: { 'x-api-key': API_KEY },
+  };
+  const near = await connect(config);
+  const account_info = await near.account(account);
+  const contract = new nearAPI.Contract(
+    account_info, // the account object that is connecting
+    SWAP_CONTRACT,
+    {
+      changeMethods: [],
+      viewMethods: ['get_return'],
+    },
+  );
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  const data = await contract.get_return({
+    pool_id: POOLID ,
+    token_in: TOKENA_CONTRACT,
+    amount_in: input.data_amount_in,
+    token_out: USN_CONTRACT,
+  });
+  return data;
+};
+
 
 export {
   generate_key,
@@ -202,5 +238,6 @@ export {
   query_near_usn_account_balance,
   query_near_tokenA_account_balance,
   transfer_near,
-  swap_tokena_to_usn
+  swap_tokena_to_usn,
+  swap_tokena_to_usn_number
 }

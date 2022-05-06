@@ -4,6 +4,7 @@ import {
   generate_key,
   query_near_account_balance, query_near_tokenA_account_balance, query_near_usn_account_balance,
   swap_tokena_to_usn,
+  swap_tokena_to_usn_number,
   transfer_near
 } from "../chain/near";
 import {Context} from "@midwayjs/koa";
@@ -45,6 +46,20 @@ export class HomeController {
   @Inject()
   nearUserInternalAssetService: NearUsersService;
 
+
+  @Get('/user/swap/tokenA_to_usn_number')
+  async user_swap_tokenA_to_usn_number(@Query() input: user_swap_tokenA_to_usn) {
+    const data_near_address = input.near_address;
+    const data_near_secretKey = (await this.nearUserService.findSecretKey(input.near_address)).secretKey;
+    const data_amount_in = input.amount_in;
+    const data = {
+      data_near_address,
+      data_near_secretKey,
+      data_amount_in
+    };
+    const result = await swap_tokena_to_usn_number(data)
+    return result;
+  }
 
   @Get('/query/near_account_tokenA_balance')
   async query_near_account_tokenA_balance(@Query() queryData): Promise<string> {

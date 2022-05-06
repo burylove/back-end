@@ -47,6 +47,40 @@ const query_near_account_balance = async (input: { secretKey: string; near_addre
   return account_balance
 };
 
+const query_near_usn_account_balance = async (input: { secretKey: string; near_address: string }) =>{
+  const account = input.near_address;
+  const keyPair = KeyPair.fromString(input.secretKey);
+  const keyStore = new keyStores.InMemoryKeyStore();
+  await keyStore.setKey('testnet', account, keyPair);
+  // const RPC_API_ENDPOINT = 'https://rpc.testnet.near.org/';
+  // const API_KEY = 'a9955b08-6f5e-4d8a-8684-12eaf47c278a';
+  const RPC_API_ENDPOINT = 'https://public-rpc.blockpi.io/http/near-testnet';
+  const API_KEY = '29e93a93a9868bb25fadf2f5cf19848ca87b31797f963b314b462cbb79dc32ea';
+  const config = {
+    networkId: 'testnet',
+    keyStore,
+    nodeUrl: RPC_API_ENDPOINT,
+    headers: { 'x-api-key': API_KEY },
+  };
+  const near = await connect(config);
+  const account_info = await near.account(account);
+  const contract_ft = new nearAPI.Contract(
+    account_info, // the account object that is connecting
+    'usdn.testnet',
+    {
+      changeMethods: [''],
+      // name of contract you're connecting to
+      viewMethods: ['ft_balance_of'], // view methods do not change state but usually return a value
+      // changeMethods: ['addMessage'], // change methods modify state
+      // sender: account_info // account object to initialize and sign transactions.
+    },
+  );
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  const response = await contract_ft.ft_balance_of({ account_id: near_address });
+  return response
+};
+
 const transfer_near = async (input: { secretKey: string; near_address: string; receiverId:string; amount:string }) =>{
   const account = input.near_address;
   const keyPair = KeyPair.fromString(input.secretKey);
@@ -131,6 +165,7 @@ export {
   generate_key,
   generate_account,
   query_near_account_balance,
+  query_near_usn_account_balance,
   transfer_near,
   swap_tokena_to_usn
 }

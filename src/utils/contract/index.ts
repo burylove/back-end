@@ -1,0 +1,13 @@
+const POOLID = 439
+const SWAP_CONTRACT = 'ref-finance-101.testnet'
+const TOKENA_CONTRACT = 'dev-1651721707474-21284748210345'
+const USN_CONTRACT = 'usdn.testnet'
+
+
+
+export {
+  POOLID,
+  SWAP_CONTRACT,
+  TOKENA_CONTRACT,
+  USN_CONTRACT
+}

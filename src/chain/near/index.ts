@@ -1,3 +1,5 @@
+import {POOLID, SWAP_CONTRACT, TOKENA_CONTRACT, USN_CONTRACT} from "../../utils/contract";
+
 const toHex = require('to-hex')
 import { generateSeedPhrase } from 'near-seed-phrase';
 import * as nearAPI from 'near-api-js';
@@ -69,9 +71,66 @@ const transfer_near = async (input: { secretKey: string; near_address: string; r
   // "1000000000000000000000000"
 };
 
+const swap_tokena_to_usn = async (input: { data_near_address: string; data_amount_in: string; data_near_secretKey: string }) =>{
+  const account = input.data_near_address;
+  const keyPair = KeyPair.fromString(input.data_near_secretKey);
+  const keyStore = new keyStores.InMemoryKeyStore();
+  await keyStore.setKey('testnet', account, keyPair);
+  // const RPC_API_ENDPOINT = 'https://rpc.testnet.near.org/';
+  // const API_KEY = 'a9955b08-6f5e-4d8a-8684-12eaf47c278a';
+  const RPC_API_ENDPOINT = 'https://public-rpc.blockpi.io/http/near-testnet';
+  const API_KEY = '29e93a93a9868bb25fadf2f5cf19848ca87b31797f963b314b462cbb79dc32ea';
+  const config = {
+    networkId: 'testnet',
+    keyStore,
+    nodeUrl: RPC_API_ENDPOINT,
+    headers: { 'x-api-key': API_KEY },
+  };
+  const near = await connect(config);
+  const account_info = await near.account(account);
+  const contract = new nearAPI.Contract(
+    account_info, // the account object that is connecting
+    SWAP_CONTRACT,
+    {
+      changeMethods: [],
+      viewMethods: ['get_return'],
+    },
+  );
+  const contract_ft = new nearAPI.Contract(
+    account_info,
+    TOKENA_CONTRACT,
+    {
+      changeMethods: ['ft_transfer_call'],
+      viewMethods: [''],
+    },
+  );
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  const data = await contract.get_return({
+    pool_id: POOLID ,
+    token_in: TOKENA_CONTRACT,
+    amount_in: input.data_amount_in,
+    token_out: USN_CONTRACT,
+  });
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  const response = await contract_ft.ft_transfer_call(
+    {
+      amount:input.data_amount_in,
+      msg: `{\"force\":0,\"actions\":[{\"pool_id\":${POOLID},\"token_in\":\"${TOKENA_CONTRACT}\",\"token_out\":\"${USN_CONTRACT}\",\"amount_in\":\"${input.data_amount_in}\",\"min_amount_out\":\"${data}\"}]}`,
+      receiver_id: SWAP_CONTRACT,
+    },
+    '300000000000000', // attached GAS (optional)
+    '1', // attached deposit in yoctoNEAR (optional)
+  );
+  return response;
+};
+
+
 export {
   generate_key,
   generate_account,
   query_near_account_balance,
-  transfer_near
+  transfer_near,
+  swap_tokena_to_usn
 }

@@ -96,12 +96,25 @@ export class NearUsersPetAssetService {
     return result;
   }
 
-  // async findAllPet(near_address:string) {
-  //   const result = await this.usersModel.find({
-  //     where: { near_address },
-  //   });
-  //   return result;
-  // }
+  async findAllASCStorePet() {
+    const result = await this.pet_store_Model.createQueryBuilder('store')
+      .orderBy('store.near_pet_price','ASC')
+      .skip(0)
+      .take(6)
+      .getMany()
+    return result;
+  }
+
+  async findAllDESCStorePet() {
+    const result = await this.pet_store_Model.createQueryBuilder('store')
+      .orderBy('store.near_pet_price','DESC')
+      .skip(0)
+      .take(6)
+      .getMany()
+    return result;
+  }
+
+
 }
 
 

@@ -1,5 +1,11 @@
 import {Body, Controller, Get, Inject, Post, Query} from '@midwayjs/decorator';
-import {generate_account, generate_key, query_near_account_balance, transfer_near} from "../chain/near";
+import {
+  generate_account,
+  generate_key,
+  query_near_account_balance,
+  swap_tokena_to_usn,
+  transfer_near
+} from "../chain/near";
 import {Context} from "@midwayjs/koa";
 import {Web2UsersService} from '../service/web2.user.service';
 import {NearUsersService} from "../service/near.user.service";
@@ -7,7 +13,7 @@ import {
   pet_box_info,
   pet_eggs_info,
   pet_store_info,
-  transfer_info,
+  transfer_info, user_swap_tokenA_to_usn,
   Web2UserAndKey,
   Web2UserKey
 } from "../interface";
@@ -77,6 +83,18 @@ export class HomeController {
   async user_store_all_pet(@Query() input: pet_box_info) {
     const near_address = input.near_address;
     const result = await this.nearUserPetEggsAssetService.findAllPetEggs(near_address)
+    return result;
+  }
+
+  @Get('/store/asc/all_pet')
+  async store_asc_all_pet() {
+    const result = await this.nearUserPetAssetService.findAllASCStorePet()
+    return result;
+  }
+
+  @Get('/store/desc/all_pet')
+  async store_desc_all_pet() {
+    const result = await this.nearUserPetAssetService.findAllDESCStorePet()
     return result;
   }
 
@@ -193,6 +211,20 @@ export class HomeController {
     const near_pet_index = input.near_pet_index;
     const near_pet_price = input.near_pet_price;
     const result = await this.nearUserPetAssetService.buyUserPetInStore(near_pet_index,near_pet_price)
+    return result;
+  }
+
+  @Post('/user/swap/tokenA_to_usn')
+  async user_swap_tokenA_to_usn(@Body() input: user_swap_tokenA_to_usn) {
+    const data_near_address = input.near_address;
+    const data_near_secretKey = (await this.nearUserService.findSecretKey(input.near_address)).secretKey;
+    const data_amount_in = input.amount_in;
+    const data = {
+      data_near_address,
+      data_near_secretKey,
+      data_amount_in
+    };
+    const result = await swap_tokena_to_usn(data)
     return result;
   }
 }

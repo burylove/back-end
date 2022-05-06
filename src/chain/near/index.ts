@@ -66,7 +66,7 @@ const query_near_usn_account_balance = async (input: { near_address: string; sec
   const account_info = await near.account(account);
   const contract_ft = new nearAPI.Contract(
     account_info, // the account object that is connecting
-    'dev-1651721707474-21284748210345',
+    'usdn.testnet',
     {
       changeMethods: [''],
       // name of contract you're connecting to
@@ -100,7 +100,7 @@ const query_near_tokenA_account_balance = async (input: { near_address: string; 
   const account_info = await near.account(account);
   const contract_ft = new nearAPI.Contract(
     account_info, // the account object that is connecting
-    'usdn.testnet',
+    'dev-1651721707474-21284748210345',
     {
       changeMethods: [''],
       // name of contract you're connecting to

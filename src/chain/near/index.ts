@@ -47,7 +47,7 @@ const query_near_account_balance = async (input: { secretKey: string; near_addre
   return account_balance
 };
 
-const query_near_usn_account_balance = async (input: { secretKey: string; near_address: string }) =>{
+const query_near_usn_account_balance = async (input: { near_address: string; secretKey: string; }) =>{
   const account = input.near_address;
   const keyPair = KeyPair.fromString(input.secretKey);
   const keyStore = new keyStores.InMemoryKeyStore();
@@ -77,7 +77,7 @@ const query_near_usn_account_balance = async (input: { secretKey: string; near_a
   );
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
-  const response = await contract_ft.ft_balance_of({ account_id: near_address });
+  const response = await contract_ft.ft_balance_of({ account_id: account });
   return response
 };
 

@@ -89,6 +89,15 @@ export class NearUsersPetAssetService {
     }
   }
 
+  async findOnePet(near_pet_index:number) {
+    const result = await this.usersModel.findOne(
+      {
+        where:{near_pet_index}
+      }
+    )
+    return result
+  }
+
   async findAllPet(near_address:string) {
     const result = await this.usersModel.find({
       where: { near_address },

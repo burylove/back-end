@@ -38,6 +38,15 @@ export class NearUsersPetEggsAssetService {
     return userResult
   }
 
+  async findOneEgg(near_pet_eggs_index:number) {
+    const result = await this.usersModel.findOne(
+      {
+        where:{near_pet_eggs_index}
+      }
+    )
+    return result
+  }
+
   async findAllPetEggs(near_address:string) {
     const result = await this.usersModel.find({
       where: { near_address },

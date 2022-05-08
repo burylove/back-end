@@ -47,6 +47,20 @@ export class HomeController {
   nearUserInternalAssetService: NearUsersService;
 
 
+  @Get('/query/pet')
+  async query_pet(@Query() queryData) {
+    const near_pet_index = queryData.near_pet_index;
+    const result =  this.nearUserPetAssetService.findOnePet(near_pet_index);
+    return result;
+  }
+
+  @Get('/query/pet_eggs')
+  async query_egg(@Query() queryData) {
+    const near_pet_eggs_index = queryData.near_pet_eggs;
+    const result =  this.nearUserPetEggsAssetService.findOneEgg(near_pet_eggs_index);
+    return result;
+  }
+
   @Get('/user/swap/tokenA_to_usn_number')
   async user_swap_tokenA_to_usn_number(@Query() input: user_swap_tokenA_to_usn) {
     const data_near_address = input.near_address;

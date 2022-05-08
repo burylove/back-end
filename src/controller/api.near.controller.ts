@@ -135,12 +135,25 @@ export class HomeController {
     return result;
   }
 
+
   @Get('/store/desc/all_pet')
   async store_desc_all_pet() {
     const result = await this.nearUserPetAssetService.findAllDESCStorePet()
     return result;
   }
 
+  @Get('/store/asc/all_pet_eggs')
+  async store_asc_all_pet_eggs() {
+    const result = await this.nearUserPetEggsAssetService.findAllASCStorePetEggs()
+    return result;
+  }
+
+
+  @Get('/store/desc/all_pet_eggs')
+  async store_desc_all_pet_eggs() {
+    const result = await this.nearUserPetEggsAssetService.findAllDESCStorePetEggs()
+    return result;
+  }
 
   @Post('/add_web2_user_key')
   async add_web2_user_key(@Body() input:Web2UserKey) {

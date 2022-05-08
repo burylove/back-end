@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import {near_pet_eggs_asset} from "../entity/near_pet_eggs_asset";
 import {Pet_eggs_number} from "../entity/pet_eggs_number";
 import {Uncommon_pet_random} from "../utils/random";
+import {near_pet_eggs_store} from "../entity/near_pet_eggs_store";
 
 @Provide()
 export class NearUsersPetEggsAssetService {
@@ -12,6 +13,10 @@ export class NearUsersPetEggsAssetService {
 
   @InjectEntityModel(Pet_eggs_number)
   pet_eggs_number_Model: Repository<Pet_eggs_number>;
+
+  @InjectEntityModel(near_pet_eggs_store)
+  pet_eggs_store_Model: Repository<near_pet_eggs_store>;
+
 
   async addUserPetEggs(near_account: string ) {
     const user = new near_pet_eggs_asset();
@@ -37,6 +42,24 @@ export class NearUsersPetEggsAssetService {
     const result = await this.usersModel.find({
       where: { near_address },
     });
+    return result;
+  }
+
+  async findAllASCStorePetEggs() {
+    const result = await this.pet_eggs_store_Model.createQueryBuilder('store')
+      .orderBy('store.near_pet_eggs_price','ASC')
+      .skip(0)
+      .take(6)
+      .getMany()
+    return result;
+  }
+
+  async findAllDESCStorePetEggs() {
+    const result = await this.pet_eggs_store_Model.createQueryBuilder('store')
+      .orderBy('store.near_pet_eggs_price','DESC')
+      .skip(0)
+      .take(6)
+      .getMany()
     return result;
   }
 }

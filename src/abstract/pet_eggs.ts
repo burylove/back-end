@@ -2,8 +2,9 @@ import {
   Column,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import {near_pet_relation} from "./near_pet_relation";
 
-export abstract class pet_eggs {
+export abstract class pet_eggs extends near_pet_relation {
   @PrimaryGeneratedColumn()
   id: number;
 

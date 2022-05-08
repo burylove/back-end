@@ -2,8 +2,9 @@ import {
   Column,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import {near_pet_relation} from "./near_pet_relation";
 
-export abstract class pet {
+export abstract class pet extends near_pet_relation{
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -42,5 +43,8 @@ export abstract class pet {
 
   @Column()
   near_pet_lucky_value:number;
+
+  @Column()
+  near_pet_mint_number:number;
 }
 

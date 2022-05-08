@@ -90,7 +90,7 @@ export class NearUsersPetAssetService {
   }
 
   async findOnePet(near_pet_index:number) {
-    const result = await this.usersModel.findOne(
+    const result = await this.pet_store_Model.findOne(
       {
         where:{near_pet_index}
       }

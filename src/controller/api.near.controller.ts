@@ -278,9 +278,10 @@ export class HomeController {
 
   @Post('/user/buy/pet_store')
   async user_buy_pet_store(@Body() input: pet_store_info) {
+    const near_address = input.near_address;
     const near_pet_index = input.near_pet_index;
     const near_pet_price = input.near_pet_price;
-    const result = await this.nearUserPetAssetService.buyUserPetInStore(near_pet_index,near_pet_price)
+    const result = await this.nearUserPetAssetService.buyUserPetInStore(near_address,near_pet_index,near_pet_price)
     return result;
   }
 

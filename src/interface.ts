@@ -30,6 +30,7 @@ export interface pet_eggs_info {
 }
 
 export interface pet_store_info {
+  near_address:string;
   near_pet_index:number;
   near_pet_price:string;
 }

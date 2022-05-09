@@ -124,6 +124,15 @@ export class NearUsersPetAssetService {
     }
   }
 
+  async findOneUserPet(near_pet_index:number) {
+    const result = await this.usersModel.findOne(
+      {
+        where:{near_pet_index}
+      }
+    )
+    return result
+  }
+
   async findOnePet(near_pet_index:number) {
     const result = await this.pet_store_Model.findOne(
       {

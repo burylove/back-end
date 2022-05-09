@@ -47,10 +47,18 @@ export class HomeController {
   nearUserInternalAssetService: NearUsersService;
 
 
+
   @Get('/query/pet')
   async query_pet(@Query() queryData) {
     const near_pet_index = queryData.near_pet_index;
     const result =  this.nearUserPetAssetService.findOnePet(near_pet_index);
+    return result;
+  }
+
+  @Get('/user/pet/details')
+  async user_pet_details(@Query() queryData) {
+    const near_pet_index = queryData.near_pet_index;
+    const result =  this.nearUserPetAssetService.findOneUserPet(near_pet_index);
     return result;
   }
 

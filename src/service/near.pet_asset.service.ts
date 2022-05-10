@@ -2,8 +2,7 @@ import { Provide } from '@midwayjs/decorator';
 import { InjectEntityModel } from '@midwayjs/orm';
 import { Repository } from 'typeorm';
 import {near_pet_asset} from "../entity/near_pet_asset";
-import {Pet_number} from "../entity/pet_number";
-import {Uncommon_pet_random} from "../utils/random";
+import {Common_pet_random, Epic_pet_random, Rare_pet_random, Uncommon_pet_random} from "../utils/random";
 import {near_pet_store} from "../entity/near_pet_store";
 import {near_pet_eggs_asset} from "../entity/near_pet_eggs_asset";
 
@@ -12,58 +11,75 @@ export class NearUsersPetAssetService {
   @InjectEntityModel(near_pet_asset)
   usersModel: Repository<near_pet_asset>;
 
-  @InjectEntityModel(Pet_number)
-  pet_number_Model: Repository<Pet_number>;
-
   @InjectEntityModel(near_pet_store)
   pet_store_Model: Repository<near_pet_store>;
 
   @InjectEntityModel(near_pet_eggs_asset)
   usersEggsModel: Repository<near_pet_eggs_asset>;
 
-  async addUserPet(near_account: string,near_pet_eggs_index:number ) {
+  async addUserPet(near_address: string,near_pet_eggs_index:number ) {
     const user = new near_pet_asset();
-    user.near_address = near_account;
+    user.near_address = near_address;
     //remove
-    const user_eggs_info = await this.usersEggsModel.findOne({
-      where:{ near_pet_eggs_index }
+    const user_eggs_info = await this.usersEggsModel.findOneBy({
+      near_address,
+      near_pet_eggs_index,
     });
-    await this.usersEggsModel.remove(user_eggs_info);
-    const pet_number_result = await this.pet_number_Model.findOne({
-      where: { network:"near" },
-    });
-    const type = await Uncommon_pet_random();
-    user.near_pet_index = pet_number_result.pet_number;
-    user.near_pet_name = 'able';
-    user.near_pet_image_url = 'https://cdn.discordapp.com/attachments/876498266550853642/969892589669072926/2b589afe10e09b84.png';
-    user.near_pet_type = type;
-    user.near_pet_level = '0';
-    user.near_pet_birth_times = 0;
-    user.near_pet_hunger_value = 0;
-    user.near_pet_stamina_value = 0;
-    user.near_pet_health_value = 0;
-    user.near_pet_intelligence_value = 0;
-    user.near_pet_charisma_value = 0;
-    user.near_pet_lucky_value = 0;
-    user.near_pet_mint_number = 0;
-    user.near_pet_parents_1 = '';
-    user.near_pet_parents_2 = '';
-    user.near_pet_child_1 = '';
-    user.near_pet_child_2 = '';
-    user.near_pet_child_3 = '';
-    user.near_pet_child_4 = '';
-    user.near_pet_child_5 = '';
-    user.near_pet_child_6 = '';
-    user.near_pet_child_7 = '';
-    user.near_pet_child_8 = '';
-    user.near_pet_child_9 = '';
-    user.near_pet_child_10 = '';
-    // save entity
-    const userResult = await this.usersModel.save(user);
-    pet_number_result.pet_number ++;
-    await this.pet_number_Model.save(pet_number_result);
-    // save success
-    return userResult;
+
+    const add_pet = async (type:string) =>{
+      await this.usersEggsModel.remove(user_eggs_info);
+      user.near_pet_index = near_pet_eggs_index;
+      user.near_pet_image_url = 'https://cdn.discordapp.com/attachments/876498266550853642/969892589669072926/2b589afe10e09b84.png';
+      user.near_pet_type = type;
+      user.near_pet_level = '0';
+      user.near_pet_birth_times = 0;
+      user.near_pet_hunger_value = 0;
+      user.near_pet_stamina_value = 0;
+      user.near_pet_health_value = 0;
+      user.near_pet_intelligence_value = 0;
+      user.near_pet_charisma_value = 0;
+      user.near_pet_lucky_value = 0;
+      user.near_pet_mint_number = 0;
+      user.near_pet_parents_1 = '';
+      user.near_pet_parents_2 = '';
+      user.near_pet_child_1 = '';
+      user.near_pet_child_2 = '';
+      user.near_pet_child_3 = '';
+      user.near_pet_child_4 = '';
+      user.near_pet_child_5 = '';
+      user.near_pet_child_6 = '';
+      user.near_pet_child_7 = '';
+      user.near_pet_child_8 = '';
+      user.near_pet_child_9 = '';
+      user.near_pet_child_10 = '';
+      // save entity
+      const userResult = await this.usersModel.save(user);
+      return userResult
+    }
+
+    const eggs_type = user_eggs_info.near_pet_eggs_type;
+
+    if (eggs_type == 'Common'){
+      const type = Common_pet_random();
+      const userResult = await add_pet(type);
+      return userResult;
+    }else if(eggs_type == 'Uncommon'){
+      const type = Uncommon_pet_random();
+      const userResult = await add_pet(type);
+      return userResult;
+    }else if(eggs_type == 'Rare'){
+      const type = Rare_pet_random();
+      const userResult = await add_pet(type);
+      return userResult;
+    }else if(eggs_type == 'Rare_pet_random'){
+      const type = Epic_pet_random();
+      const userResult = await add_pet(type);
+      return userResult;
+    }else{
+      const type = 'Legendary';
+      const userResult = await add_pet(type);
+      return userResult;
+    }
   }
 
   async addUserPetInStore(near_pet_index:number,near_pet_price:string) {
@@ -84,6 +100,18 @@ export class NearUsersPetAssetService {
     };
   }
 
+  async removeUserPet(near_pet_index:number) {
+    const pet_result = await this.usersModel.findOne({
+      where:{near_pet_index}
+    });
+    if (pet_result){
+      await this.usersModel.remove(pet_result)
+      return 'success'
+    }else{
+      return "no data"
+    };
+  }
+
   async buyUserPetInStore(near_address:string,near_pet_index:number,near_pet_price:string) {
     const pet_result = await this.pet_store_Model.findOne({
       where:{near_pet_index}
@@ -92,7 +120,6 @@ export class NearUsersPetAssetService {
       const user = new near_pet_asset();
       user.near_address = near_address;
       user.near_pet_index = pet_result.near_pet_index;
-      user.near_pet_name = pet_result.near_pet_name;
       user.near_pet_image_url = pet_result.near_pet_image_url;
       user.near_pet_type = pet_result.near_pet_type;
       user.near_pet_level = pet_result.near_pet_level;

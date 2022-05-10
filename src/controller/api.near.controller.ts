@@ -1,7 +1,7 @@
 import {Body, Controller, Get, Inject, Post, Query} from '@midwayjs/decorator';
 import {
   generate_account,
-  generate_key,
+  generate_key, mint_near_pet_nft,
   query_near_account_balance, query_near_tokenA_account_balance, query_near_usn_account_balance,
   swap_tokena_to_usn,
   swap_tokena_to_usn_number,
@@ -12,7 +12,7 @@ import {Web2UsersService} from '../service/web2.user.service';
 import {NearUsersService} from "../service/near.user.service";
 import {
   pet_box_info,
-  pet_eggs_info,
+  pet_eggs_info, pet_info,
   pet_store_info,
   transfer_info, user_swap_tokenA_to_usn,
   Web2UserAndKey,
@@ -269,10 +269,12 @@ export class HomeController {
     return result;
   }
 
-  @Post('/generate/pet_eggs_box')
-  async generate_pet_eggs_box(@Body() input: pet_eggs_info) {
+  @Post('/generate/pet_eggs')
+  async generate_pet_eggs(@Body() input: pet_eggs_info) {
     const near_address = input.near_address;
-    const result = await this.nearUserPetEggsAssetService.addUserPetEggs(near_address)
+    const near_pet_eggs_index = input.near_pet_eggs_index;
+    const near_pet_eggs_type = input.near_pet_eggs_type;
+    const result = await this.nearUserPetEggsAssetService.addUserPetEggs(near_address,near_pet_eggs_index,near_pet_eggs_type)
     return result;
   }
 
@@ -305,5 +307,18 @@ export class HomeController {
     };
     const result = await swap_tokena_to_usn(data)
     return result;
+  }
+
+  @Post('/user/transfer/nft_to_external')
+  async user_transfer_nft_to_external(@Body() input: pet_info) {
+    const near_address = input.near_address;
+    const near_pet_index = input.near_pet_index;
+    const result_state = await this.nearUserPetAssetService.removeUserPet(near_pet_index);
+    if (result_state == 'success'){
+      const result = await mint_near_pet_nft(near_address,near_pet_index);
+      return result;
+    }else{
+      return 'error';
+    }
   }
 }

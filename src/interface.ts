@@ -27,6 +27,8 @@ export interface pet_box_info {
 
 export interface pet_eggs_info {
   near_address:string;
+  near_pet_eggs_index:number;
+  near_pet_eggs_type:string;
 }
 
 export interface pet_store_info {
@@ -35,8 +37,18 @@ export interface pet_store_info {
   near_pet_price:string;
 }
 
+export interface pet_info {
+  near_address:string;
+  near_pet_index:number;
+}
+
+
 export interface Web2UserKey {
   key:string
+}
+
+export interface Web2UserEmail {
+  email:string
 }
 
 export interface user_swap_tokenA_to_usn {

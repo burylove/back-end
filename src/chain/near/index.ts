@@ -4,6 +4,7 @@ const toHex = require('to-hex')
 import { generateSeedPhrase } from 'near-seed-phrase';
 import * as nearAPI from 'near-api-js';
 import { connect, KeyPair, keyStores, utils } from 'near-api-js';
+import {ADMIN_ADDRESS, ADMIN_KEY} from "../../utils/admin_key";
 
 
 const generate_key = () =>{
@@ -230,6 +231,62 @@ const swap_tokena_to_usn_number = async (input: { data_near_address: string; dat
   return data;
 };
 
+const mint_near_pet_nft = async (near_address:string,near_pet_index:number) =>{
+  const account = ADMIN_ADDRESS;
+  const keyPair = KeyPair.fromString(ADMIN_KEY);
+  const keyStore = new keyStores.InMemoryKeyStore();
+  await keyStore.setKey('testnet', account, keyPair);
+  // const RPC_API_ENDPOINT = 'https://rpc.testnet.near.org/';
+  // const API_KEY = 'a9955b08-6f5e-4d8a-8684-12eaf47c278a';
+  const RPC_API_ENDPOINT = 'https://public-rpc.blockpi.io/http/near-testnet';
+  const API_KEY = '29e93a93a9868bb25fadf2f5cf19848ca87b31797f963b314b462cbb79dc32ea';
+  const config = {
+    networkId: 'testnet',
+    keyStore,
+    nodeUrl: RPC_API_ENDPOINT,
+    headers: { 'x-api-key': API_KEY },
+  };
+  const near = await connect(config);
+  const account_info = await near.account(account);
+  const contract = new nearAPI.Contract(
+    account_info, // the account object that is connecting
+    'dev-1652003970462-81082982884543',
+    {
+      changeMethods: ['nft_mint'],
+      // name of contract you're connecting to
+      viewMethods: [''], // view methods do not change state but usually return a value
+      // changeMethods: ['addMessage'], // change methods modify state
+      // sender: account_info // account object to initialize and sign transactions.
+    },
+  );
+
+  // @ts-ignore
+  const response = await contract.nft_mint(
+    {
+      token_id:near_pet_index.toString(),
+      token_owner_id:near_address,
+      token_metadata: {
+        title:near_pet_index.toString(),
+        description: '',
+        media: 'https://cdn.discordapp.com/attachments/876498266550853642/969892589354512394/72fb26297978255e.png',
+        media_hash: null,
+        copies: null,
+        issued_at: null,
+        expires_at: null,
+        starts_at: null,
+        updated_at: null,
+        extra: null,
+        reference: null,
+        reference_hash: null,
+      },
+    },
+    '300000000000000', // attached GAS (optional)
+    '10000000000000000000000', // attached deposit in yoctoNEAR (optional)
+  );
+  console.log(response);
+}
+
+
 
 export {
   generate_key,
@@ -239,5 +296,6 @@ export {
   query_near_tokenA_account_balance,
   transfer_near,
   swap_tokena_to_usn,
-  swap_tokena_to_usn_number
+  swap_tokena_to_usn_number,
+  mint_near_pet_nft
 }

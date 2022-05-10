@@ -14,6 +14,15 @@ export class near_internal_asset {
   @Column()
   near_balance: string;
 
+  @Column()
+  game_token_balance: string;
+
+  @Column()
+  token_a_balance: string;
+
+  @Column()
+  token_b_balance: string;
+
   @CreateDateColumn()
   create?: number;
 

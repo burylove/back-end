@@ -4,7 +4,7 @@ const getRandomInt = (min, max) => {
   return Math.floor(Math.random() * (max - min)) + min; //不含最大值，含最小值
 }
 
-const Common_pet_random = async () => {
+const Common_pet_random =  () => {
   const random = getRandomInt(0,100)
   // un normalized
   if (random > 96){
@@ -14,7 +14,7 @@ const Common_pet_random = async () => {
   }
 }
 
-const Uncommon_pet_random = async () => {
+const Uncommon_pet_random =  () => {
   const random = getRandomInt(0,100)
   // un normalized
   if (random > 97){
@@ -26,7 +26,7 @@ const Uncommon_pet_random = async () => {
   }
 }
 
-const Rare_pet_random = async () => {
+const Rare_pet_random =  () => {
   const random = getRandomInt(0,100)
   // un normalized
   if (random > 97){
@@ -37,10 +37,9 @@ const Rare_pet_random = async () => {
     return 'Uncommon'
   }
 
-
 }
 
-const Epic_pet_random = async () => {
+const Epic_pet_random =  () => {
   const random = getRandomInt(0,100)
   // un normalized
   if (random > 97){

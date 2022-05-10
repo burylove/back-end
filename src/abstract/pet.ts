@@ -12,9 +12,6 @@ export abstract class pet extends near_pet_relation{
   near_pet_index: number;
 
   @Column()
-  near_pet_name:string;
-
-  @Column()
   near_pet_image_url:string;
 
   @Column()

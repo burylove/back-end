@@ -1,18 +1,22 @@
 import { EntityModel } from '@midwayjs/orm';
 import {
   Column,
+  PrimaryGeneratedColumn,
   VersionColumn,
   CreateDateColumn,
-  UpdateDateColumn, PrimaryColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 
 @EntityModel()
-export class Pet_eggs_number {
-  @PrimaryColumn()
-  network: string;
+export class Web2UserEmail {
+  @PrimaryGeneratedColumn()
+  id: number;
 
   @Column()
-  pet_eggs_number:number;
+  email: string;
+
+  @Column()
+  code: string;
 
   @CreateDateColumn()
   create?: number;

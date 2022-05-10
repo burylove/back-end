@@ -28,6 +28,9 @@ export class NearUsersService {
     const user = new near_internal_asset();
     user.near_address = near_hex_account;
     user.near_balance = '0';
+    user.game_token_balance = '';
+    user.token_a_balance = '';
+    user.token_b_balance = '';
     // save entity
     const userResult = await this.usersInternalModel.save(user);
     // save success

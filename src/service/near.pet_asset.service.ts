@@ -5,6 +5,12 @@ import {near_pet_asset} from "../entity/near_pet_asset";
 import {Common_pet_random, Epic_pet_random, Rare_pet_random, Uncommon_pet_random} from "../utils/random";
 import {near_pet_store} from "../entity/near_pet_store";
 import {near_pet_eggs_asset} from "../entity/near_pet_eggs_asset";
+import {
+  Common_Attributes_random,
+  Epic_Attributes_random, Legendary_Attributes_random,
+  Rare_Attributes_random,
+  Uncommon_Attributes_random
+} from "../utils/attributes";
 
 @Provide()
 export class NearUsersPetAssetService {
@@ -26,20 +32,20 @@ export class NearUsersPetAssetService {
       near_pet_eggs_index,
     });
 
-    const add_pet = async (type:string) =>{
+    const add_pet = async (type:string,intelligence:number,charisma:number,healthy:number,lucky:number) =>{
       await this.usersEggsModel.remove(user_eggs_info);
       user.near_pet_index = near_pet_eggs_index;
       user.near_pet_image_url = 'https://cdn.discordapp.com/attachments/876498266550853642/969892589669072926/2b589afe10e09b84.png';
       user.near_pet_type = type;
       user.near_pet_level = '0';
       user.near_pet_birth_times = 0;
-      user.near_pet_hunger_value = 0;
+      user.near_pet_hunger_value = 100;
       user.near_pet_stamina_value = 0;
-      user.near_pet_health_value = 0;
-      user.near_pet_intelligence_value = 0;
-      user.near_pet_charisma_value = 0;
-      user.near_pet_lucky_value = 0;
-      user.near_pet_mint_number = 0;
+      user.near_pet_health_value = healthy;
+      user.near_pet_intelligence_value = intelligence;
+      user.near_pet_charisma_value = charisma;
+      user.near_pet_lucky_value = lucky;
+      user.near_pet_mint_number = 10;
       user.near_pet_parents_1 = '';
       user.near_pet_parents_2 = '';
       user.near_pet_child_1 = '';
@@ -61,23 +67,43 @@ export class NearUsersPetAssetService {
 
     if (eggs_type == 'Common'){
       const type = Common_pet_random();
-      const userResult = await add_pet(type);
+      const intelligence = Common_Attributes_random()
+      const charisma = Common_Attributes_random()
+      const healthy = Common_Attributes_random()
+      const lucky = Common_Attributes_random()
+      const userResult = await add_pet(type,intelligence,charisma,healthy,lucky);
       return userResult;
     }else if(eggs_type == 'Uncommon'){
       const type = Uncommon_pet_random();
-      const userResult = await add_pet(type);
+      const intelligence = Uncommon_Attributes_random()
+      const charisma = Uncommon_Attributes_random()
+      const healthy = Uncommon_Attributes_random()
+      const lucky = Uncommon_Attributes_random()
+      const userResult = await add_pet(type,intelligence,charisma,healthy,lucky);
       return userResult;
     }else if(eggs_type == 'Rare'){
       const type = Rare_pet_random();
-      const userResult = await add_pet(type);
+      const intelligence = Rare_Attributes_random()
+      const charisma = Rare_Attributes_random()
+      const healthy = Rare_Attributes_random()
+      const lucky = Rare_Attributes_random()
+      const userResult = await add_pet(type,intelligence,charisma,healthy,lucky);
       return userResult;
-    }else if(eggs_type == 'Rare_pet_random'){
+    }else if(eggs_type == 'Epic'){
       const type = Epic_pet_random();
-      const userResult = await add_pet(type);
+      const intelligence = Epic_Attributes_random()
+      const charisma = Epic_Attributes_random()
+      const healthy = Epic_Attributes_random()
+      const lucky = Epic_Attributes_random()
+      const userResult = await add_pet(type,intelligence,charisma,healthy,lucky);
       return userResult;
     }else{
       const type = 'Legendary';
-      const userResult = await add_pet(type);
+      const intelligence = Legendary_Attributes_random()
+      const charisma = Legendary_Attributes_random()
+      const healthy = Legendary_Attributes_random()
+      const lucky = Legendary_Attributes_random()
+      const userResult = await add_pet(type,intelligence,charisma,healthy,lucky);
       return userResult;
     }
   }
@@ -98,6 +124,19 @@ export class NearUsersPetAssetService {
     }else{
       return "no data"
     };
+  }
+
+  async repairUserPet(near_address:string,near_pet_index:number,repair_data:number){
+    const result = await this.usersModel.findOne(
+      {
+        where:{near_pet_index}
+      }
+    )
+    if(near_address ==result.near_address){
+      result.near_pet_hunger_value =Math.floor(result.near_pet_hunger_value+ Number(repair_data/0.41))
+      await this.usersModel.save(result)
+    }
+    return result
   }
 
   async removeUserPet(near_pet_index:number) {

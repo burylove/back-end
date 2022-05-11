@@ -62,9 +62,16 @@ export class HomeController {
     return result;
   }
 
+  @Get('/user/pet_eggs/details')
+  async user_pet_eggs_details(@Query() queryData) {
+    const near_pet_eggs_index = queryData.near_pet_eggs_index;
+    const result =  this.nearUserPetEggsAssetService.findOneUserPetEgg(near_pet_eggs_index);
+    return result;
+  }
+
   @Get('/query/pet_eggs')
   async query_egg(@Query() queryData) {
-    const near_pet_eggs_index = queryData.near_pet_eggs;
+    const near_pet_eggs_index = queryData.near_pet_eggs_index;
     const result =  this.nearUserPetEggsAssetService.findOneEgg(near_pet_eggs_index);
     return result;
   }
@@ -196,6 +203,7 @@ export class HomeController {
     }
   }
 
+
   @Post('/user/open/pet_eggs')
   async user_open_pet_eggs(@Body() input: pet_box_info) {
     const near_address = input.near_address;
@@ -278,11 +286,29 @@ export class HomeController {
     return result;
   }
 
+  @Post('/user/repair_pet')
+  async repair_pet(@Body() input: pet_info) {
+    const near_address = input.near_address;
+    const near_pet_index = input.near_pet_index;
+    const repair_data = input.repair_data;
+    const result = await this.nearUserPetAssetService.repairUserPet(near_address,near_pet_index,repair_data)
+    return result;
+  }
+
   @Post('/user/sell/pet_store')
   async user_sell_pet_store(@Body() input: pet_store_info) {
     const near_pet_index = input.near_pet_index;
     const near_pet_price = input.near_pet_price;
     const result = await this.nearUserPetAssetService.addUserPetInStore(near_pet_index,near_pet_price)
+    return result;
+  }
+
+
+  @Post('/user/sell/pet_eggs_store')
+  async user_sell_pet_eggs_store(@Body() input: pet_eggs_info) {
+    const near_pet_eggs_index = input.near_pet_eggs_index;
+    const near_pet_eggs_price = input.near_pet_eggs_price;
+    const result = await this.nearUserPetEggsAssetService.addUserPetEggsInStore(near_pet_eggs_index,near_pet_eggs_price)
     return result;
   }
 
@@ -292,6 +318,15 @@ export class HomeController {
     const near_pet_index = input.near_pet_index;
     const near_pet_price = input.near_pet_price;
     const result = await this.nearUserPetAssetService.buyUserPetInStore(near_address,near_pet_index,near_pet_price)
+    return result;
+  }
+
+  @Post('/user/buy/pet_eggs_store')
+  async user_buy_pet_eggs_store(@Body() input: pet_eggs_info) {
+    const near_address = input.near_address;
+    const near_pet_eggs_index = input.near_pet_eggs_index;
+    const near_pet_eggs_price = input.near_pet_eggs_price;
+    const result = await this.nearUserPetEggsAssetService.buyUserPetEggsInStore(near_address,near_pet_eggs_index,near_pet_eggs_price)
     return result;
   }
 

@@ -13,7 +13,32 @@ export class NearUsersPetEggsAssetService {
   pet_eggs_store_Model: Repository<near_pet_eggs_store>;
 
 
+  async findOneUserPetEgg(near_pet_eggs_index:number) {
+    const result = await this.usersModel.findOne(
+      {
+        where:{near_pet_eggs_index}
+      }
+    )
+    return result
+  }
 
+  async addUserPetEggsInStore(near_pet_eggs_index:number,near_pet_eggs_price:string) {
+    const pet_eggs_result = await this.usersModel.findOne({
+      where:{near_pet_eggs_index}
+    });
+
+    if (pet_eggs_result){
+      const input_store_data = {
+        ...pet_eggs_result,
+        near_pet_eggs_price
+      }
+      const result = await this.pet_eggs_store_Model.save(input_store_data)
+      await this.usersModel.remove(pet_eggs_result)
+      return result
+    }else{
+      return "no data"
+    };
+  }
 
   async addUserPetEggs(near_account: string,near_pet_eggs_index:number,near_pet_eggs_type:string) {
     const user = new near_pet_eggs_asset();
@@ -29,10 +54,29 @@ export class NearUsersPetEggsAssetService {
     return userResult
   }
 
+  async buyUserPetEggsInStore(near_address:string,near_pet_eggs_index:number,near_pet_eggs_price:string) {
+    const pet_eggs_result = await this.pet_eggs_store_Model.findOne({
+      where:{near_pet_eggs_index}
+    });
+    if (near_pet_eggs_price == pet_eggs_result.near_pet_eggs_price){
+      const user = new near_pet_eggs_asset();
+      user.near_address = near_address;
+      user.near_pet_eggs_index = pet_eggs_result.near_pet_eggs_index;
+      user.near_pet_eggs_image_url = pet_eggs_result.near_pet_eggs_image_url;
+      user.near_pet_eggs_type = pet_eggs_result.near_pet_eggs_type;
+      user.near_pet_parents_1 = pet_eggs_result.near_pet_parents_1;
+      user.near_pet_parents_2 = pet_eggs_result.near_pet_parents_2;
+      await this.usersModel.save(user);
+      await this.pet_eggs_store_Model.remove(pet_eggs_result);
+      return 'ok'
+    }else{
+      return "not enough money"
+    }
+  }
   async findOneEgg(near_pet_eggs_index:number) {
-    const result = await this.usersModel.findOne(
+    const result = await this.pet_eggs_store_Model.findOne(
       {
-        where:{near_pet_eggs_index}
+        where:{near_pet_eggs_index:near_pet_eggs_index}
       }
     )
     return result

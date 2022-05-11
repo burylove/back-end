@@ -29,6 +29,7 @@ export interface pet_eggs_info {
   near_address:string;
   near_pet_eggs_index:number;
   near_pet_eggs_type:string;
+  near_pet_eggs_price:string;
 }
 
 export interface pet_store_info {
@@ -40,6 +41,7 @@ export interface pet_store_info {
 export interface pet_info {
   near_address:string;
   near_pet_index:number;
+  repair_data:number;
 }
 
 

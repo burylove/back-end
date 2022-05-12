@@ -42,6 +42,7 @@ export interface pet_info {
   near_address:string;
   near_pet_index:number;
   repair_data:number;
+  near_pet_level:number;
 }
 
 

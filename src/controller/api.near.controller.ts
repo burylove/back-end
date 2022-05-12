@@ -294,6 +294,13 @@ export class HomeController {
     const result = await this.nearUserPetAssetService.repairUserPet(near_address,near_pet_index,repair_data)
     return result;
   }
+  @Post('/user/level_pet')
+  async level_pet(@Body() input: pet_info) {
+    const near_address = input.near_address;
+    const near_pet_index = input.near_pet_index;
+    const result = await this.nearUserPetAssetService.levelUserPet(near_address,near_pet_index)
+    return result;
+  }
 
   @Post('/user/sell/pet_store')
   async user_sell_pet_store(@Body() input: pet_store_info) {

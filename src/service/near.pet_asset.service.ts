@@ -139,6 +139,22 @@ export class NearUsersPetAssetService {
     return result
   }
 
+  async levelUserPet(near_address:string,near_pet_index:number,){
+    const result = await this.usersModel.findOne(
+      {
+        where:{near_pet_index}
+      }
+    )
+    if(near_address ==result.near_address){
+      if(Number(result.near_pet_level) < 20){
+        result.near_pet_level = (Number(result.near_pet_level) + 1).toString()
+        await this.usersModel.save(result)
+      }
+
+    }
+    return result
+  }
+
   async removeUserPet(near_pet_index:number) {
     const pet_result = await this.usersModel.findOne({
       where:{near_pet_index}
